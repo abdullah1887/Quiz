@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">{{ quiz.title }}</h4>
+    </div>
+    <div class="card-body">
+        <p class="mb-0">{{ quiz.description }}</p>
+    </div>
+</div>
+
+{% if questions %}
+    <form method="POST">
+        {% csrf_token %}
+        {% for q in questions %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="mb-3">{{ forloop.counter }}. {{ q.question }}</h6>
+                    {% for opt in q.random_options %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="question_{{ q.id }}" id="opt_{{ opt.id }}" value="{{ opt.id }}" required>
+                            <label class="form-check-label" for="opt_{{ opt.id }}">
+                                {{ opt.option }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success">Submit Quiz</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back</a>
+    </form>
+{% else %}
+    <div class="alert alert-warning">No questions added to this quiz yet.</div>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+{% endif %}
+{% endblock %}
